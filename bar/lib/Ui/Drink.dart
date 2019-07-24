@@ -1,7 +1,6 @@
 import 'package:bar/Ui/DrinkDetail.dart';
 import 'package:flutter/material.dart';
 
-import 'MyDrawer.dart';
 import 'Repository.dart';
 
 class DrinkPage extends StatefulWidget {
@@ -19,7 +18,6 @@ class _DrinkPageState extends State<DrinkPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: MyDrawer(),
         appBar: AppBar(
           backgroundColor: Color(0xff7f0000),
           title: Text(
@@ -33,9 +31,28 @@ class _DrinkPageState extends State<DrinkPage> {
           Padding(
             padding: EdgeInsets.all(10),
             child: TextField(
+                style: TextStyle(fontSize: 15),
                 decoration: InputDecoration(
-                    labelText: "Pesquise o nome do Drink Aqui",
-                    labelStyle: TextStyle(color: Colors.black)),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.search, color: Colors.black,),
+                      onPressed:(){
+                        setState(() {
+                          if(_nmDrink == ''){
+                            _nmDrink = null;
+                          }
+                        });
+                      },
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide: BorderSide(
+                            color: Colors.black, width: 1.0)),
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        borderSide: BorderSide(
+                            color: Colors.black, width: 1.0)),
+                    labelText: "Search Here...",
+                    labelStyle: TextStyle(color: Colors.black,)),
                 onSubmitted: (text) {
                   setState(() {
                     if (_nmDrink == '') {
@@ -59,8 +76,8 @@ class _DrinkPageState extends State<DrinkPage> {
                           alignment: Alignment.center,
                           child: CircularProgressIndicator(
                             valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.white),
-                            strokeWidth: 5,
+                            AlwaysStoppedAnimation<Color>(Colors.black),
+                            strokeWidth: 3,
                           ),
                         );
                       default:
@@ -76,43 +93,40 @@ class _DrinkPageState extends State<DrinkPage> {
   Widget _drinksAll(BuildContext context, AsyncSnapshot snapshot) {
     if (_getTam(snapshot.data['drinks']) == 0) {
       return ListTile(
-        leading: Icon(Icons.search , color: Colors.black38),
-        title:Text('Nenhum Resultado Encontrado!', style: TextStyle(color: Colors.black38, fontSize: 18),) ,
+        leading: Icon(Icons.search, color: Colors.black38),
+        title: Text(
+          'Nenhum Resultado Encontrado!',
+          style: TextStyle(color: Colors.black38, fontSize: 18),
+        ),
       );
     } else {
       return ListView.builder(
           itemCount: _getTam(snapshot.data['drinks']),
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
-              child: Card(
-                child: Padding(
+              child: Padding(
                   padding: EdgeInsets.all(10),
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        width: 75,
-                        height: 75,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.rectangle,
-                            image: DecorationImage(
-                                image: NetworkImage(snapshot.data['drinks']
-                                [index]['strDrinkThumb']))),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text(snapshot.data['drinks'][index]['strDrink']),
-                      )
-                    ],
-                  ),
-                ),
+                  child:
+                  ListTile(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  Detail(snapshot.data['drinks'][index])));
+                    },
+                    leading: CircleAvatar(
+                      backgroundColor: Color(0xff7f0000),
+                      radius: 30,
+                      backgroundImage: NetworkImage(
+                          snapshot.data['drinks'][index]['strDrinkThumb']),
+                    ),
+                    title: Text(snapshot.data['drinks'][index]['strDrink']),
+                    subtitle: Text(
+                        'id: ${snapshot.data['drinks'][index]['idDrink']}'),
+                  )
+
               ),
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            Detail(snapshot.data['drinks'][index])));
-              },
             );
           });
     }
@@ -126,4 +140,3 @@ class _DrinkPageState extends State<DrinkPage> {
     }
   }
 }
-

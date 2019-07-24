@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'Drink.dart';
-import 'MyDrawer.dart';
 
 class Cat extends StatefulWidget {
   @override
@@ -26,11 +25,10 @@ class _CatState extends State<Cat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawer: MyDrawer(),
         appBar: AppBar(
           backgroundColor: Color(0xff7f0000),
           title: Text(
-            "Categorias",
+            "Categories",
             style: TextStyle(color: Colors.white),
           ),
           centerTitle: true,
@@ -46,13 +44,12 @@ class _CatState extends State<Cat> {
                       case ConnectionState.waiting:
                       case ConnectionState.none:
                         return Container(
-                          width: 200,
-                          height: 200,
-                          alignment: Alignment.center,
-                          child: CircularProgressIndicator(
-                            valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.white),
-                            strokeWidth: 5,
+                          child: Center(
+                            child: CircularProgressIndicator(
+                              valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.black),
+                              strokeWidth: 3,
+                            ),
                           ),
                         );
                       default:
